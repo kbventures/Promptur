@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
+import { Button, View} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session';
 
 WebBrowser.maybeCompleteAuthSession();
 
 // 1. Configuration (Get these from Meta App Dashboard > Instagram > API Setup)
-const IG_APP_ID = 'YOUR_INSTAGRAM_APP_ID';
 const DISCOVERY = {
   authorizationEndpoint: 'https://www.instagram.com/oauth/authorize',
   tokenEndpoint: 'https://api.instagram.com/oauth/access_token',
@@ -15,10 +14,10 @@ const DISCOVERY = {
 export default function InstagramLogin() {
   const [request, response, promptAsync] = useAuthRequest(
     {
-      clientId: IG_APP_ID,
+      clientId: process.env.EXPO_PUBLIC_APP_ID!,
       scopes: ['instagram_business_basic', 'instagram_business_content_publish'],
       redirectUri: makeRedirectUri({
-        scheme: 'your-app-scheme' // defined in app.json
+        scheme: 'promptur' // defined in app.json
       }),
       responseType: ResponseType.Code, // We want an Auth Code, not a token directly
     },
@@ -33,7 +32,7 @@ export default function InstagramLogin() {
     }
   }, [response]);
 
-  const exchangeCodeForToken = async (code) => {
+  const exchangeCodeForToken = async (code: string) => {
     try {
       const res = await fetch('https://your-hono-api.com/auth/instagram/callback', {
         method: 'POST',
