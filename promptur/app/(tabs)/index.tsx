@@ -1,0 +1,59 @@
+import * as React from 'react';
+import { Button, View, Text } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session';
+
+WebBrowser.maybeCompleteAuthSession();
+
+// 1. Configuration (Get these from Meta App Dashboard > Instagram > API Setup)
+const IG_APP_ID = 'YOUR_INSTAGRAM_APP_ID';
+const DISCOVERY = {
+  authorizationEndpoint: 'https://www.instagram.com/oauth/authorize',
+  tokenEndpoint: 'https://api.instagram.com/oauth/access_token',
+};
+
+export default function InstagramLogin() {
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: IG_APP_ID,
+      scopes: ['instagram_business_basic', 'instagram_business_content_publish'],
+      redirectUri: makeRedirectUri({
+        scheme: 'your-app-scheme' // defined in app.json
+      }),
+      responseType: ResponseType.Code, // We want an Auth Code, not a token directly
+    },
+    DISCOVERY
+  );
+
+  React.useEffect(() => {
+    if (response?.type === 'success') {
+      const { code } = response.params;
+      // 2. Send this code to your Hono backend immediately
+      exchangeCodeForToken(code);
+    }
+  }, [response]);
+
+  const exchangeCodeForToken = async (code) => {
+    try {
+      const res = await fetch('https://your-hono-api.com/auth/instagram/callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, redirectUri: makeRedirectUri({ scheme: 'your-app-scheme' }) })
+      });
+      const data = await res.json();
+      console.log("Logged in! IG User ID:", data.user_id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button
+        disabled={!request}
+        title="Log in with Instagram"
+        onPress={() => promptAsync()}
+      />
+    </View>
+  );
+}
