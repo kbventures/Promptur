@@ -44,4 +44,4 @@ app-example
 
 # Secrets
 SECRETS.md
-
+.env
