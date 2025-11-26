@@ -1,35 +1,59 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import { Text, StyleSheet } from "react-native";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarActiveTintColor: "#ffd33d",
+        headerTitleAlign: "center",
+        headerStyle: {
+          backgroundColor: "#fff",
+        },
+        headerShadowVisible: false,
+        headerTintColor: "#000",
+        tabBarStyle: {
+          backgroundColor: "#fff",
+        },
+        tabBarShowLabel: false,
+        headerTitle: () => <Text style={styles.title}>Promptur</Text>,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home-sharp" : "home-outline"}
+              color={color}
+              size={24}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="record"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name="play-skip-forward-outline"
+              size={24}
+              color={"#3b1f77"}
+            />
+          ),
+          headerShown: false,
+          tabBarStyle: { display: "none" },
         }}
       />
     </Tabs>
   );
 }
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#E97463",
+  },
+});
