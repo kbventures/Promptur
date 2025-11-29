@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dmitrykulakov.promptur"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +20,12 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.dmitrykulakov.promptur"
     },
     "web": {
       "output": "static",
@@ -39,11 +45,46 @@
           }
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      "expo-asset",
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "1150197070552438",
+          "clientToken": "1a95c703ccae3ee8b4024ad0c0780d83",
+          "displayName": "Promptur",
+          "scheme": "fb1150197070552438",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": true,
+          "isAutoInitEnabled": true,
+          "iosUserTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "df78c574-65a3-4b63-9d6a-89cf4e4d4c5c"
+      }
+    },
+    "owner": "dmitrykulakov"
   }
 }
