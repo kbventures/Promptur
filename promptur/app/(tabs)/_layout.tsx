@@ -47,6 +47,16 @@ export default function TabLayout() {
           tabBarStyle: { display: "none" },
         }}
       />
+      <Tabs.Screen
+        name="facebook"
+        options={{
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name="logo-facebook" size={24} color={"#3b1f77"} />
+          ),
+          headerShown: false,
+          tabBarStyle: { display: "none" },
+        }}
+      />
     </Tabs>
   );
 }

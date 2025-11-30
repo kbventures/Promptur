@@ -13,7 +13,7 @@ import {
 import * as MediaLibrary from "expo-media-library";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { AudioModule } from "expo-audio";
-import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 export default function App() {
   const [facing, setFacing] = useState<CameraType>("front"); // Default to front for selfie mode like image
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -22,7 +22,6 @@ export default function App() {
   const [isRecording, setIsRecording] = useState(false);
   const cameraRef = useRef<CameraView>(null);
   const [mediaUri, setMediaUri] = useState<string>();
-  const navigation = useNavigation();
 
   // --- Permissions ---
   if (!cameraPermission || !mediaLibraryPermission) {
@@ -83,6 +82,12 @@ export default function App() {
           const data = await uriPromise;
           console.log("Video recorded to URI:", data?.uri);
           setMediaUri(data?.uri);
+
+          // Navigate to share screen with the uri
+          router.push({
+            pathname: "/(tabs)/share",
+            params: { uri: data?.uri },
+          });
         }
       } catch (e) {
         console.error(e);
@@ -124,10 +129,7 @@ export default function App() {
       />
 
       <SafeAreaView style={styles.topContainer}>
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={navigation.goBack}
-        >
+        <TouchableOpacity style={styles.closeButton} onPress={router.back}>
           <Ionicons name="close" size={28} color="#3b1f77" />
         </TouchableOpacity>
       </SafeAreaView>
