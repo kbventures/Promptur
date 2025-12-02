@@ -14,8 +14,15 @@ import * as MediaLibrary from "expo-media-library";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { AudioModule } from "expo-audio";
 import { router } from "expo-router";
+import Swiper from "react-native-deck-swiper";
+const questions = [
+  "What makes you happy?",
+  "What's your favorite memory?",
+  "What inspires you?",
+  "What is your dream?",
+];
 export default function App() {
-  const [facing, setFacing] = useState<CameraType>("front"); // Default to front for selfie mode like image
+  const [facing, setFacing] = useState<CameraType>("back");
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [mediaLibraryPermission, requestMediaLibraryPermission] =
     MediaLibrary.usePermissions();
@@ -82,12 +89,6 @@ export default function App() {
           const data = await uriPromise;
           console.log("Video recorded to URI:", data?.uri);
           setMediaUri(data?.uri);
-
-          // Navigate to share screen with the uri
-          router.push({
-            pathname: "/(tabs)/share",
-            params: { uri: data?.uri },
-          });
         }
       } catch (e) {
         console.error(e);
@@ -109,6 +110,11 @@ export default function App() {
           await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
         }
         Alert.alert("Saved!", "Video saved to your gallery.");
+        // Navigate to share screen with the uri
+        router.push({
+          pathname: "/(tabs)/share",
+          params: { uri: mediaUri },
+        });
         setMediaUri(undefined);
       } catch (error) {
         Alert.alert("Error", "Failed to save video");
@@ -135,8 +141,23 @@ export default function App() {
       </SafeAreaView>
 
       <View style={styles.bottomUiContainer}>
-        <View style={styles.questionCard}>
+        {/* <View style={styles.questionCard}>
           <Text style={styles.questionText}>What makes you{"\n"}happy?</Text>
+        </View> */}
+        {/* Swipeable question cards */}
+        <View style={styles.swiperContainer}>
+          <Swiper
+            cards={questions}
+            renderCard={(card) => (
+              <View style={styles.questionCard}>
+                <Text style={styles.questionText}>{card}</Text>
+              </View>
+            )}
+            backgroundColor="transparent"
+            disableTopSwipe
+            disableBottomSwipe
+            animateCardOpacity
+          />
         </View>
 
         <View style={styles.controlBar}>
@@ -183,6 +204,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "black",
+  },
+  swiperContainer: {
+    height: 200, // adjust card height
+    marginBottom: -10,
   },
   permissionContainer: {
     flex: 1,
